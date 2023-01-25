@@ -6,7 +6,7 @@ const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
     const menuItems = user && <>
         <li><Link to='/products'>Products</Link></li>
-        <li><Link>Cart</Link></li>
+        <li><Link to='/cart'>Cart</Link></li>
         <li><Link>Orders</Link></li>
         <li><Link>Customers</Link></li>
     </>
