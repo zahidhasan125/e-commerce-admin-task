@@ -4,7 +4,6 @@ import DetailsModal from '../DetailsModal/DetailsModal';
 const ProductCard = ({ product }) => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const { title, price, thumbnail, brand, discountPercentage } = product;
-    console.log(selectedProduct);
     return (
         <div className="card bg-opacity-10 hover:bg-opacity-25 bg-slate-400 shadow-xl">
             <figure className="px-5 pt-5 min-h-[268px]">

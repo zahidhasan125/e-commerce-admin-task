@@ -6,6 +6,8 @@ import Login from '../pages/Login/Login';
 import SignUp from '../pages/SignUp/SignUp';
 import Products from '../pages/Products/Products';
 import Cart from '../pages/Cart/Cart';
+import PrivateRoute from './PrivateRoute';
+import Orders from '../pages/Orders/Orders';
 
 export const router = createBrowserRouter(
     [
@@ -31,7 +33,11 @@ export const router = createBrowserRouter(
                 },
                 {
                     path: '/cart',
-                    element: <Cart />
+                    element: <PrivateRoute><Cart /></PrivateRoute>
+                },
+                {
+                    path: '/orders',
+                    element: <PrivateRoute><Orders /></PrivateRoute>
                 }
             ]
         }

@@ -1,11 +1,20 @@
-import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
 import {toast} from 'react-hot-toast'
+import useToken from '../../hooks/useToken';
 
 const Login = () => {
     const { user, login } = useContext(AuthContext);
+    const [loggedInUserEmail, setLoggedInUserEmail] = useState('');
+    const [token] = useToken(loggedInUserEmail);
     const navigate = useNavigate();
+    const location = useLocation()
+    const from = location.state?.from?.pathname || '/'
+
+    if (token || loggedInUserEmail !== '') {
+        navigate(from, { replace: true })
+    }
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -14,12 +23,14 @@ const Login = () => {
         const password = form.password.value;
         login(email, password)
             .then(result => {
-                console.log(result);
                 toast.success('Login Successful!')
-                navigate('/products')
+                const user = result.user;
+                setLoggedInUserEmail(user.email);                
             })
             .catch(err => {
                 console.error(err);
+                const error = err.message.split('/')[1].substring(0, err.message.split('/')[1].length - 2);
+                toast.error(error.split('-').join(' '));
             })
     }
     return (
@@ -28,17 +39,17 @@ const Login = () => {
                 <div className="card shadow-2xl w-full border-t">
                     <h2 className='text-4xl text-center font-bold mt-4 text-white'>Login</h2>
                     <form onSubmit={handleLogin} className="card-body pt-0">
-                        <div className="form-control">
+                    <div className="form-control">
                             <label className="label">
-                                <span className="label-text text-white">Email</span>
+                                <span className="label-text text-white">Email*</span>
                             </label>
-                            <input type="email" name='email' placeholder="john@example.com" className="input input-bordered" />
+                            <input type="email" name='email' placeholder="john@example.com" className="input input-bordered" required/>
                         </div>
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text text-white">Password</span>
+                                <span className="label-text text-white">Password*</span>
                             </label>
-                            <input type="password" name='password' placeholder="P@$$w0Rd" className="input input-bordered" />
+                            <input type="password" name='password' placeholder="P@$$w0Rd (At least 6 character)" className="input input-bordered" required/>
                         </div>
                         <label className="label">
                             <span className="label-text-alt text-white">New to E-Shop? <Link to="/signup" className='link link-hover text-md text-cyan-500 font-bold'>Sign Up</Link></span>

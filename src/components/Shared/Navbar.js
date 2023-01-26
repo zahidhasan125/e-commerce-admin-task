@@ -7,7 +7,7 @@ const Navbar = () => {
     const menuItems = user && <>
         <li><Link to='/products'>Products</Link></li>
         <li><Link to='/cart'>Cart</Link></li>
-        <li><Link>Orders</Link></li>
+        <li><Link to='/orders'>Orders</Link></li>
         <li><Link>Customers</Link></li>
     </>
 

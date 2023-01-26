@@ -3,12 +3,12 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
 import { toast } from 'react-hot-toast';
 
-const Cart = () => {
+const Orders = () => {
     const { user } = useContext(AuthContext);
-    const { data: cartItems = [], isLoading, refetch } = useQuery({
+    const { data: orders = [], isLoading, refetch } = useQuery({
         queryKey: ['cart', user?.email],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:8082/cart?email=${user?.email}`)
+            const res = await fetch(`http://localhost:8082/orders?email=${user?.email}`)
             const data = res.json();
             return data;
         }
@@ -17,14 +17,9 @@ const Cart = () => {
     if (isLoading) {
         return <progress className="progress w-full mx-auto"></progress>;
     }
-    console.log(cartItems);
-
     const handleRemoveFromCart = item => {
         fetch(`http://localhost:8082/cart?id=${item._id}`, {
-            method: "DELETE",
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('e-shop-task-token')}`
-            }
+            method: "DELETE"
         })
             .then(res => res.json())
             .then(data => {
@@ -37,17 +32,16 @@ const Cart = () => {
                 console.error(err);
             })
     }
-
     return (
         <div className='text-white'>
-            {cartItems.length > 0
+            {orders.length > 0
                 ?
-                <h2 className='text-center text-4xl font-bold my-6'>Items Added on Cart</h2>
+                <h2 className='text-center text-4xl font-bold my-6'>All ordered items</h2>
                 :
                 <h2 className='text-center text-4xl font-bold my-6'>No Items Found. Please Add Products to Cart.</h2>
             }
             {
-                cartItems.length>0 && <div className="overflow-x-auto w-full">
+                orders.length>0 && <div className="overflow-x-auto w-full">
                     <table className="table w-full text-black">
                         <thead>
                             <tr>
@@ -61,7 +55,7 @@ const Cart = () => {
                         </thead>
                         <tbody>
                             {
-                                cartItems.map((item, idx) => <tr key={item._id}>
+                                orders.map((item, idx) => <tr key={item._id}>
                                     <th>{idx + 1}</th>
                                     <td>
                                         <div className="flex items-center space-x-3">
@@ -105,4 +99,4 @@ const Cart = () => {
     );
 };
 
-export default Cart;
+export default Orders;
