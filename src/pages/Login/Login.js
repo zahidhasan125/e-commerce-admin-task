@@ -34,7 +34,7 @@ const Login = () => {
             })
     }
     return (
-        <div className="hero my-10">
+        <div className="hero py-10">
             {!user ? <div className="hero-content flex-col lg:flex-row-reverse w-full md:w-3/5 lg:max-w-sm">
                 <div className="card shadow-2xl w-full border-t">
                     <h2 className='text-4xl text-center font-bold mt-4 text-white'>Login</h2>
@@ -54,6 +54,12 @@ const Login = () => {
                         <label className="label">
                             <span className="label-text-alt text-white">New to E-Shop? <Link to="/signup" className='link link-hover text-md text-cyan-500 font-bold'>Sign Up</Link></span>
                         </label>
+                        
+                            <p className="label-text-alt text-white"><span className='text-md text-cyan-500 font-bold'>User Email: </span>maliha@gmail.com</p>
+                            <p className="label-text-alt text-white"><span className='text-md text-cyan-500 font-bold'>Password: </span>123456</p>
+                            <p className="label-text-alt text-white"><span className='text-md text-cyan-200 font-bold'>Admin Email: </span>mah@fuz.com</p>
+                            <p className="label-text-alt text-white"><span className='text-md text-cyan-200 font-bold'>Password: </span>123456</p>
+                        
                         <div className="form-control mt-4">
                             <button className="btn btn-outline text-white">Login</button>
                         </div>

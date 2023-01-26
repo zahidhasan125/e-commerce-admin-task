@@ -22,7 +22,7 @@ const DetailsModal = ({ setSelectedProduct, selectedProduct }) => {
         }
 
         if (user) {
-            axios.patch(`http://localhost:8082/add-to-cart?id=${item._id}`, item, { headers: headers })
+            axios.patch(`${process.env.REACT_APP_dnsName}/add-to-cart?id=${item._id}`, item, { headers: headers })
                 .then(res => {
                     if (res.data?.acknowledged || res.data?.modifiedCount > 0) {
                         toast.success('Item added to cart!');

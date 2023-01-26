@@ -24,7 +24,7 @@ const SignUp = () => {
                             displayName: userName,
                             email,
                         }
-                        fetch(`http://localhost:8082/signup`, {
+                        fetch(`${process.env.REACT_APP_dnsName}/signup`, {
                             method: 'POST',
                             headers: {
                                 'content-type': 'application/json'

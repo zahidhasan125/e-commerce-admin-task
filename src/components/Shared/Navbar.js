@@ -1,21 +1,26 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
+import useAdmin from '../../hooks/useAdmin';
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
-    const menuItems = user && <>
-        <li><Link to='/products'>Products</Link></li>
-        <li><Link to='/cart'>Cart</Link></li>
-        <li><Link to='/orders'>Orders</Link></li>
-        <li><Link>Customers</Link></li>
-    </>
+    const [isAdmin] = useAdmin(user?.email)
+    const menuItems = user &&
+        <>
+            <li><Link to='/products'>Products</Link></li>
+            <li><Link to='/cart'>Cart</Link></li>
+            {isAdmin && <>
+                <li><Link to='/orders'>Orders</Link></li>
+                <li><Link to='/customers'>Customers</Link></li>
+            </>}
+        </>
 
     const handleLogOut = () => {
         console.log('logout');
         logout()
             .then(res => { })
-        .catch(err=>console.error(err))
+            .catch(err => console.error(err))
     }
 
     return (
@@ -43,9 +48,12 @@ const Navbar = () => {
             <div className="navbar-end">
                 {
                     user ?
-                        <Link onClick={handleLogOut} className="btn">Log Out</Link>
+                        <Link onClick={handleLogOut} className="btn btn-outline btn-error">Log Out</Link>
                         :
-                        <Link to='/login' className="btn">Login</Link>
+                        <>
+                            <Link to='/login' className="btn btn-outline btn-info mr-2">Login</Link>
+                            <Link to='/signup' className="btn btn-outline btn-accent">Sign Up</Link>
+                        </>
                 }
             </div>
         </div>

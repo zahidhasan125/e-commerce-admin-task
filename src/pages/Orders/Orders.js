@@ -10,7 +10,7 @@ const Orders = () => {
     const { data: orders = [], isLoading, refetch } = useQuery({
         queryKey: ['cart', user?.email],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:8082/orders?email=${user?.email}`, {
+            const res = await fetch(`${process.env.REACT_APP_dnsName}/orders?email=${user?.email}`, {
                 headers: {
                     authorization: `Bearer ${localStorage.getItem('e-shop-task-token')}`
                 }
@@ -24,7 +24,7 @@ const Orders = () => {
         return <progress className="progress w-full mx-auto"></progress>;
     }
     const handleRemoveFromCart = item => {
-        fetch(`http://localhost:8082/cart?id=${item._id}`, {
+        fetch(`${process.env.REACT_APP_dnsName}/cart?id=${item._id}`, {
             method: "DELETE",
             headers: {
                 authorization: `Bearer ${localStorage.getItem('e-shop-task-token')}`
@@ -107,7 +107,7 @@ const Orders = () => {
 
                     </table>
                 </div>}
-                <div>
+            <div>
                 {
                     selectedProduct && <DeleteModal
                         handleRemoveFromCart={handleRemoveFromCart}
