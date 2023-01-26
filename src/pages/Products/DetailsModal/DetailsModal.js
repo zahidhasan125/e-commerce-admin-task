@@ -17,16 +17,14 @@ const DetailsModal = ({ setSelectedProduct, selectedProduct }) => {
             customer: user?.email
         }
         const headers = {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${localStorage.getItem('e-shop-task-token')}`
         }
 
         if (user) {
-            axios.post(`http://localhost:8082/add-to-cart`, item, {
-                headers
-            })
+            axios.patch(`http://localhost:8082/add-to-cart?id=${item._id}`, item, { headers: headers })
                 .then(res => {
-                    console.log(res.data.acknowledged);
-                    if (res.data.acknowledged) {
+                    if (res.data?.acknowledged || res.data?.modifiedCount > 0) {
                         toast.success('Item added to cart!');
                         setSelectedProduct(null);
                     }

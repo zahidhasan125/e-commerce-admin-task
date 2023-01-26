@@ -1,14 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
 import { toast } from 'react-hot-toast';
+import DeleteModal from '../Cart/DeleteModal/DeleteModal';
 
 const Orders = () => {
     const { user } = useContext(AuthContext);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const { data: orders = [], isLoading, refetch } = useQuery({
         queryKey: ['cart', user?.email],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:8082/orders?email=${user?.email}`)
+            const res = await fetch(`http://localhost:8082/orders?email=${user?.email}`, {
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('e-shop-task-token')}`
+                }
+            })
             const data = res.json();
             return data;
         }
@@ -19,7 +25,10 @@ const Orders = () => {
     }
     const handleRemoveFromCart = item => {
         fetch(`http://localhost:8082/cart?id=${item._id}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('e-shop-task-token')}`
+            }
         })
             .then(res => res.json())
             .then(data => {
@@ -41,12 +50,13 @@ const Orders = () => {
                 <h2 className='text-center text-4xl font-bold my-6'>No Items Found. Please Add Products to Cart.</h2>
             }
             {
-                orders.length>0 && <div className="overflow-x-auto w-full">
+                orders.length > 0 && <div className="overflow-x-auto w-full">
                     <table className="table w-full text-black">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Item Name</th>
+                                <th>Customer Email</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Total</th>
@@ -70,12 +80,13 @@ const Orders = () => {
                                             </div>
                                         </div>
                                     </td>
+                                    <td>{item.customer}</td>
                                     <td>${item.price}</td>
                                     <td>{item.quantity}</td>
-                                    <td className='font-bold'>${item.quantity*item.price}</td>
+                                    <td className='font-bold'>${item.quantity * item.price}</td>
                                     <th>
                                         <button className="btn btn-success btn-xs mr-2">Checkout</button>
-                                        <button onClick={() => handleRemoveFromCart(item)} className="btn btn-error btn-xs">Remove</button>
+                                        <label htmlFor='delete-confirm-modal' onClick={() => setSelectedProduct(item)} className="btn btn-error btn-xs">Remove</label>
                                     </th>
                                 </tr>
                                 )
@@ -86,6 +97,7 @@ const Orders = () => {
                             <tr>
                                 <th>#</th>
                                 <th>Item Name</th>
+                                <th>Customer Email</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Total</th>
@@ -95,6 +107,15 @@ const Orders = () => {
 
                     </table>
                 </div>}
+                <div>
+                {
+                    selectedProduct && <DeleteModal
+                        handleRemoveFromCart={handleRemoveFromCart}
+                        selectedProduct={selectedProduct}
+                        setSelectedProduct={setSelectedProduct}
+                    ></DeleteModal>
+                }
+            </div>
         </div>
     );
 };

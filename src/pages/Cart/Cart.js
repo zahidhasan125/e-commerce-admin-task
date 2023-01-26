@@ -1,14 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
 import { toast } from 'react-hot-toast';
+import DeleteModal from './DeleteModal/DeleteModal';
 
 const Cart = () => {
     const { user } = useContext(AuthContext);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const { data: cartItems = [], isLoading, refetch } = useQuery({
         queryKey: ['cart', user?.email],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:8082/cart?email=${user?.email}`)
+            const res = await fetch(`http://localhost:8082/cart?email=${user?.email}`, {
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('e-shop-task-token')}`
+                }
+            })
             const data = res.json();
             return data;
         }
@@ -17,7 +23,6 @@ const Cart = () => {
     if (isLoading) {
         return <progress className="progress w-full mx-auto"></progress>;
     }
-    console.log(cartItems);
 
     const handleRemoveFromCart = item => {
         fetch(`http://localhost:8082/cart?id=${item._id}`, {
@@ -47,7 +52,7 @@ const Cart = () => {
                 <h2 className='text-center text-4xl font-bold my-6'>No Items Found. Please Add Products to Cart.</h2>
             }
             {
-                cartItems.length>0 && <div className="overflow-x-auto w-full">
+                cartItems.length > 0 && <div className="overflow-x-auto w-full">
                     <table className="table w-full text-black">
                         <thead>
                             <tr>
@@ -78,10 +83,10 @@ const Cart = () => {
                                     </td>
                                     <td>${item.price}</td>
                                     <td>{item.quantity}</td>
-                                    <td className='font-bold'>${item.quantity*item.price}</td>
+                                    <td className='font-bold'>${item.quantity * item.price}</td>
                                     <th>
                                         <button className="btn btn-success btn-xs mr-2">Checkout</button>
-                                        <button onClick={() => handleRemoveFromCart(item)} className="btn btn-error btn-xs">Remove</button>
+                                        <label htmlFor='delete-confirm-modal' onClick={() => setSelectedProduct(item)} className="btn btn-error btn-xs">Remove</label>
                                     </th>
                                 </tr>
                                 )
@@ -101,6 +106,16 @@ const Cart = () => {
 
                     </table>
                 </div>}
+            <div>
+                {
+                    selectedProduct && <DeleteModal
+                        handleRemoveFromCart={handleRemoveFromCart}
+                        selectedProduct={selectedProduct}
+                        setSelectedProduct={setSelectedProduct}
+                    ></DeleteModal>
+                }
+            </div>
+
         </div>
     );
 };
