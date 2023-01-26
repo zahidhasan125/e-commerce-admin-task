@@ -6,7 +6,7 @@ const Products = () => {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
-        axios.get('http://localhost:8082/products')
+        axios.get(`${process.env.REACT_APP_dnsName}/products`)
             .then(res => {
                 setProducts(res.data);
                 setIsLoading(false);
