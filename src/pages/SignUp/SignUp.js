@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
+import { toast } from 'react-hot-toast';
 
 const SignUp = () => {
     const { createUser, updateUserInfo, user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleRegister = e => {
         e.preventDefault();
@@ -20,7 +22,7 @@ const SignUp = () => {
                     .then(res => {
                         const userData = {
                             displayName: userName,
-                            email: user?.email,
+                            email,
                         }
                         fetch(`http://localhost:8082/signup`, {
                             method: 'POST',
@@ -30,7 +32,13 @@ const SignUp = () => {
                             body: JSON.stringify(userData)
                         })
                             .then(res => res.json())
-                            .then(data => console.log(data))
+                            .then(data => {
+                                console.log(data);
+                                if (data.acknowledged) {
+                                    toast.success('User Created Successfully!')
+                                    navigate('/products')
+                                }
+                            })
                             .catch(err => console.error(err))
                     })
                     .catch(err => console.error(err))
