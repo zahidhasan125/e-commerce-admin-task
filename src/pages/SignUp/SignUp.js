@@ -3,25 +3,44 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
 
 const SignUp = () => {
-    const { createUser } = useContext(AuthContext);
+    const { createUser, updateUserInfo, user } = useContext(AuthContext);
 
     const handleRegister = e => {
         e.preventDefault();
         console.log('clicked');
         const form = e.target;
+        const userName = form.name.value;
         const email = form.email.value;
         const password = form.password.value;
         console.log(email + ' clicked ' + password);
         createUser(email, password)
             .then(result => {
-                console.log(result);
+                const userInfo = { displayName: userName }
+                updateUserInfo(userInfo)
+                    .then(res => {
+                        const userData = {
+                            displayName: userName,
+                            email: user?.email,
+                        }
+                        fetch(`http://localhost:8082/signup`, {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify(userData)
+                        })
+                            .then(res => res.json())
+                            .then(data => console.log(data))
+                            .catch(err => console.error(err))
+                    })
+                    .catch(err => console.error(err))
             })
             .catch(err => {
                 console.error(err);
             })
     }
     return (
-        <div className="hero my-10">
+        <div className="hero mt-10">
             <div className="hero-content flex-col lg:flex-row-reverse w-full md:w-3/5 lg:max-w-sm">
                 <div className="card shadow-2xl w-full border-t">
                     <h2 className='text-4xl text-center font-bold mt-4 text-white'>Sign Up</h2>

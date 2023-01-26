@@ -11,7 +11,7 @@ const Products = () => {
             .catch(err => console.error(err))
     }, [])
     return (
-        <div className='text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+        <div className='text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 my-6'>
             {
                 products.map(product => <ProductCard key={product.id} product={product} />)
             }
